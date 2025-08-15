@@ -1,0 +1,23 @@
+<%= render 'map_box' %>
+<h2>あなたの投稿</h2>
+
+<% if @posts.any? %>
+  <div class="row">
+    <% @posts.each do |post| %>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card h-100 text-center">
+          <%= image_tag(post.image.attached? ? post.image : "no_image.png",
+                        class: "card-img-top img-fit") %>
+          <div class="card-body">
+            <h5 class="card-title"><%= post.title %></h5>
+            <p class="mb-1 text-muted"><%= post.genre&.name %></p>
+            <%= link_to "詳細", post_path(post), class: "btn btn-sm btn-primary" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>まだ投稿がありません。</p>
+<% end %>
+ <%= render 'map_js' %>

@@ -1,0 +1,14 @@
+ja:
+  activerecord:
+    models:
+      post: "投稿"
+      genre: "ジャンル"
+    attributes:
+      post:
+        genre_id: "ジャンル"
+        title: "タイトル"
+        body: "本文"
+
+  errors:
+    messages:
+      blank: "を入力してください"

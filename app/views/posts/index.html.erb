@@ -1,0 +1,15 @@
+
+<%= render 'map_box' %>
+ <% @posts.each do |post| %>
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div class="card h-100 text-center">
+            <%= image_tag(post.image.attached? ? post.image : "no_image.png", class: "card-img-top img-fit") %>
+            <div class="card-body">
+              <h5 class="card-title"><%= post.title %></h5>
+              <%= link_to "詳細", post_path(post), class: "btn btn-sm btn-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <%= render 'map_js' %>
+    </div>

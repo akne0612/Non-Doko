@@ -1,0 +1,20 @@
+<%= render 'map_box' %>
+
+
+<h1><%= @post.title %></h1>
+<p><%= @post.body %></p>
+<p>ジャンル: <%= @post.genre.name if @post.genre %></p>
+<p>住所: <%= @post.address %></p>
+<% if @post.image.attached? %>
+  <%= image_tag @post.image %>
+<% end %>
+<% if user_signed_in? && @post.user_id == current_user.id %>
+  <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-outline-primary me-2" %>
+  <%= button_to "削除", post_path(@post),
+        method: :delete,
+        data: { confirm: "本当に削除しますか？" },
+        class: "btn btn-sm btn-outline-danger" %>
+<% end %>
+
+<%= link_to "戻る", posts_path %>
+<%= render 'map_js' %>

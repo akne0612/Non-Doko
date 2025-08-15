@@ -1,0 +1,122 @@
+
+<script>
+  let map, marker, geocoder, places, autocomplete;
+
+  window.initMap = function() {
+    const initialPosition = { lat: 35.681236, lng: 139.767125 }; // 東京駅
+
+    const mapEl   = document.getElementById("map");
+    const addressInput   = document.getElementById("address-input");
+    const storeNameInput = document.getElementById("store_name_input");
+    const latInput       = document.getElementById("latitude");
+    const lngInput       = document.getElementById("longitude");
+
+    if (!mapEl) return; // 念のため
+
+    map = new google.maps.Map(mapEl, { center: initialPosition, zoom: 15 });
+
+    marker   = new google.maps.Marker({ position: initialPosition, map, draggable: true });
+    geocoder = new google.maps.Geocoder();
+    places   = new google.maps.places.PlacesService(map);
+
+    // ① 住所入力に Autocomplete を付与（選択時に place.name/geometry が確実に取れる）
+    if (addressInput) {
+      autocomplete = new google.maps.places.Autocomplete(addressInput, {
+        fields: ["name", "geometry", "formatted_address"],
+        types: ["establishment"], // お店に絞る
+        componentRestrictions: { country: "jp" }
+      });
+      autocomplete.bindTo("bounds", map);
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (!place || !place.geometry) return;
+
+        // 店名・住所・座標を反映
+        if (storeNameInput) storeNameInput.value = place.name || storeNameInput.value || "";
+        addressInput.value = place.formatted_address || addressInput.value;
+
+        const loc = place.geometry.location;
+        map.setCenter(loc); map.setZoom(17);
+        marker.setPosition(loc);
+        if (latInput) latInput.value = loc.lat();
+        if (lngInput) lngInput.value = loc.lng();
+      });
+    }
+
+    // ユーティリティ
+    function setLatLng(latLng) {
+      if (latInput) latInput.value = (typeof latLng.lat === "function" ? latLng.lat() : latLng.lat);
+      if (lngInput) lngInput.value = (typeof latLng.lng === "function" ? latLng.lng() : latLng.lng);
+    }
+    function reverseGeocodeAndFill(latLng) {
+      if (!addressInput) return;
+      geocoder.geocode({ location: latLng }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          addressInput.value = results[0].formatted_address;
+        }
+      });
+    }
+    // ② クリック/ドラッグ時は近傍のお店名で補完（Autocompleteを使わなかった場合の保険）
+    function fillNearbyStoreName(latLng) {
+      if (!storeNameInput) return;
+      places.nearbySearch(
+        {
+          location: latLng,
+          radius: 120, // ヒット率を上げるため少し広め
+          keyword: "居酒屋 OR バー OR レストラン"
+          // type: "restaurant" を使うなら keyword と併用/置換OK
+        },
+        (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
+            storeNameInput.value = results[0].name || storeNameInput.value || "";
+          }
+        }
+      );
+    }
+
+    // 住所手入力 → マップ移動
+    if (addressInput) {
+      addressInput.addEventListener("change", () => {
+        const address = addressInput.value;
+        if (!address) return;
+        geocoder.geocode({ address }, (results, status) => {
+          if (status === "OK" && results[0]) {
+            const location = results[0].geometry.location;
+            map.setCenter(location);
+            marker.setPosition(location);
+            setLatLng(location);
+            fillNearbyStoreName(location); // 店名補完
+          } else {
+            alert("住所が見つかりませんでした。");
+          }
+        });
+      });
+    }
+
+    // マーカー移動 → 住所 & 店名補完
+    marker.addListener("dragend", () => {
+      const position = marker.getPosition();
+      setLatLng(position);
+      reverseGeocodeAndFill(position);
+      fillNearbyStoreName(position);
+    });
+
+    // マップクリック → マーカー移動 & 住所 & 店名補完
+    map.addListener("click", (event) => {
+      const latLng = event.latLng;
+      marker.setPosition(latLng);
+      setLatLng(latLng);
+      reverseGeocodeAndFill(latLng);
+      fillNearbyStoreName(latLng);
+    });
+
+    // 初期値反映（任意）
+    setLatLng(initialPosition);
+    reverseGeocodeAndFill(initialPosition);
+  };
+</script>
+
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdoX6sO5IySRH2kDanbCpAygqKxScAWa0&libraries=places&callback=initMap">
+</script>

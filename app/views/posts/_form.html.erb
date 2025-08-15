@@ -1,0 +1,46 @@
+<%= form_with(model: post, local: true) do |f| %>
+  <% if post.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% post.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+ <div>
+  <%= f.label :title, "タイトル" %>
+  <%= f.text_field :title %>
+</div>
+
+<div>
+  <%= f.label :store_name, "店名" %>
+  <%= f.text_field :store_name, id: "store_name_input", class: "form-control" %>
+</div>
+
+<div>
+  <%= f.label :body, "本文" %>
+  <%= f.text_area :body %>
+</div>
+
+<div>
+  <%= f.label :genre_id, "ジャンル" %>
+  <%= f.collection_select :genre_id, @genres, :id, :name, prompt: "ジャンルを選択してください" %>
+</div>
+
+<div>
+  <%= f.label :address, "住所" %>
+  <%= f.text_field :address, id: "address-input", class: "form-control" %>
+</div>
+
+<%= f.hidden_field :latitude,  id: "latitude" %>
+<%= f.hidden_field :longitude, id: "longitude" %>
+
+<div>
+  <%= f.label :image, "画像" %>
+  <%= f.file_field :image %>
+</div>
+
+<%= f.submit "投稿" %>
+<% end %>

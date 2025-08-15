@@ -1,0 +1,33 @@
+<div class="text-center my-5">
+  <p class="lead">今日の一杯、どこで呑ンどこ？</p>
+
+  <div class="mt-4">
+  
+    <% unless user_signed_in? %>
+      <%= link_to "ログイン", new_user_session_path, class: "btn btn-outline-primary btn-lg mx-2" %>
+      <%= link_to "新規登録", new_user_registration_path, class: "btn btn-outline-success btn-lg mx-2" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <h2>新着のお店</h2>
+
+  <% if @posts.present? %>
+    <div class="row">
+      <% @posts.each do |post| %>
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div class="card h-100 text-center">
+            <%= image_tag(post.image.attached? ? post.image : "no_image.png", class: "card-img-top img-fit") %>
+            <div class="card-body">
+              <h5 class="card-title"><%= post.title %></h5>
+              <%= link_to "詳細", post_path(post), class: "btn btn-sm btn-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p>まだ投稿がありません。</p>
+  <% end %>
+</div>
