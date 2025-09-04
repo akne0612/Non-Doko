@@ -1,0 +1,7 @@
+Maps_API_Key="akane1993"
+Geocoding_API_Key="akane1993"
+GOOGLE_APPLICATION_CREDENTIALS="config/non-doko-eefcb2816331.json"
+DB_USERNAME="root"
+DB_PASSWORD="Aka19930417"
+DB_HOST="rds-mysql-server.cn6ygg6i6t65.ap-northeast-1.rds.amazonaws.com"
+DB_DATABASE="non_doko"
