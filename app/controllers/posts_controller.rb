@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user!, only: [:my]
+  before_action :authenticate_user!, only: [:my, :new, :create, :edit, :update, :destroy]
   before_action :set_post, only: %i[show edit update destroy]
+  before_action :set_genres, only: [:new, :create, :edit, :update]
   before_action :authorize_user!, only: %i[edit update destroy]
 
   def index
@@ -63,12 +64,16 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
   end
 
+  def set_genres
+    @genres = Genre.order(:name)  
+  end
+
   def authorize_user!
     redirect_to posts_path, alert: '権限がありません' unless @post.user == current_user
   end
 
   def post_params
-    params.require(:post).permit(:genre_id, :title, :body, :name, :address, :latitude, :longitude, :image, :store_name)
+    params.require(:post).permit(:genre_id, :title, :body, :address, :latitude, :longitude, :image, :store_name)
   end
 end
 
