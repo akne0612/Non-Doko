@@ -33,10 +33,7 @@
                 <span class="navbar-text">こんにちは、<%= link_to current_user.name, my_posts_path, class: "text-decoration-none fw-semibold" %>さん</span>
               </li>
               <li class="nav-item">
-                <%= link_to 'マイページ', '#', class: "nav-link" %>
-              </li>
-              <li class="nav-item">
-                <%= link_to 'お店を探す', "#", class: "nav-link" %>
+                <%= link_to 'お店を探す', shops_path, class: "nav-link" %>
               </li>
               <li class="nav-item">
                 <%= link_to '投稿一覧', posts_path, class: "nav-link" %>
@@ -74,4 +71,13 @@
   <main>
     <%= yield %>
   </main>
+  <footer class="text-center mt-5 mb-3 text-muted" style="font-size: 0.9rem;">
+    <% if admin_signed_in? %>
+      <%= link_to "管理画面トップ", admin_root_path, class: "text-decoration-none" %>
+      |
+      <%= link_to "ログアウト", destroy_admin_session_path, method: :delete, class: "text-decoration-none" %>
+    <% else %>
+      <%= link_to "管理者はこちら", new_admin_session_path, class: "text-decoration-none" %>
+    <% end %>
+  </footer>
 </body>

@@ -1,0 +1,19 @@
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="text-center">
+    <h1>管理者ダッシュボード</h1>
+
+    <div class="mt-4">
+      <%= link_to "ユーザー管理", admin_users_path, class: "btn btn-primary m-2" %>
+      <%= link_to "ジャンル管理", admin_genres_path, class: "btn btn-success m-2" %>
+      <%= link_to "コメント管理", admin_comments_path, class: "btn btn-warning m-2" %>
+    </div>
+
+    <h2 class="mt-5">最新の投稿</h2>
+    <ul class="list-unstyled">
+      <% @latest_posts.each do |post| %>
+        <li><%= post.title %>（<%= l(post.created_at, format: :short) %>）</li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+

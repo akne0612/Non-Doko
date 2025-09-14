@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center align-items-start" style="min-height: 80vh;">
+  <div class="container py-4" style="max-width: 900px;">
+    <h1 class="h4 mb-3 text-center">コメント管理</h1>
+
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>本文</th>
+          <th>ユーザー</th>
+          <th>投稿</th>
+          <th>作成</th>
+          <th class="text-end">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @comments.each do |c| %>
+          <tr>
+            <td><%= c.id %></td>
+            <td><%= truncate(c.body, length: 80) %></td>
+            <td><%= c.user&.name || c.user&.email %></td>
+            <td>
+              <% if c.post %>
+                <%= link_to c.post.title, post_path(c.post) %>
+              <% else %>
+                （削除済みの投稿）
+              <% end %>
+            </td>
+            <td><%= l c.created_at, format: :short %></td>
+            <td class="text-end">
+              <%= button_to "削除", admin_comment_path(c),
+                    method: :delete,
+                    data: { confirm: "このコメントを削除しますか？" },
+                    class: "btn btn-sm btn-outline-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div class="mt-3 text-center">
+      <%= link_to "← ダッシュボードに戻る", admin_root_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+</div>

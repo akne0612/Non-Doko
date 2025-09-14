@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center align-items-start" style="min-height: 80vh;">
+  <div class="container py-4" style="max-width: 800px;">
+  <% if notice %>
+  <div class="alert alert-success text-center"><%= notice %></div>
+<% end %>
+
+<% if alert %>
+  <div class="alert alert-danger text-center"><%= alert %></div>
+<% end %>
+    <h1 class="h4 mb-4 text-center">ジャンル管理</h1>
+
+    <div class="mb-3 text-end">
+      <%= link_to "＋ 新規追加", new_admin_genre_path, class: "btn btn-primary" %>
+    </div>
+
+    <table class="table table-striped align-middle text-center">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>ジャンル名</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @genres.each do |g| %>
+          <tr>
+            <td><%= g.id %></td>
+            <td><%= g.name %></td>
+            <td>
+              <%= link_to "編集", edit_admin_genre_path(g), class: "btn btn-sm btn-outline-secondary me-2" %>
+              <%= button_to "削除", admin_genre_path(g),
+                    method: :delete,
+                    data: { confirm: "本当に削除しますか？" },
+                    class: "btn btn-sm btn-outline-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div class="mt-4 text-center">
+      <%= link_to "← ダッシュボードに戻る", admin_root_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+</div>

@@ -1,3 +1,3 @@
 class Genre < ApplicationRecord
-  has_many :posts
+  has_many :posts, dependent: :restrict_with_error
 end

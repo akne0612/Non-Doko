@@ -5,11 +5,17 @@ class PostsController < ApplicationController
   before_action :authorize_user!, only: %i[edit update destroy]
 
   def index
-    @posts = Post.all
+    @posts = @posts = Post
+    .includes(:likes, :comments, image_attachment: :blob) 
+    .order(created_at: :desc)
+   
   end
+
 
   def show
     @post = Post.find(params[:id])
+    @comments = @post.comments.includes(:user).order(created_at: :asc)
+    @comment  = Comment.new
   end
 
   def new

@@ -1,20 +1,106 @@
-<%= render 'map_box' %>
+<%= render 'posts/map_box' %>
 
+<div class="container py-5">
+  <div class="col-md-8 mx-auto text-center">
+    <h1 class="mb-3"><%= @post.title %></h1>
 
-<h1><%= @post.title %></h1>
-<p><%= @post.body %></p>
-<p>ジャンル: <%= @post.genre.name if @post.genre %></p>
-<p>住所: <%= @post.address %></p>
-<% if @post.image.attached? %>
-  <%= image_tag @post.image %>
-<% end %>
-<% if user_signed_in? && @post.user_id == current_user.id %>
-  <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-outline-primary me-2" %>
-  <%= button_to "削除", post_path(@post),
-        method: :delete,
-        data: { confirm: "本当に削除しますか？" },
-        class: "btn btn-sm btn-outline-danger" %>
-<% end %>
+    <p class="mb-3"><%= simple_format(h(@post.body)) %></p>
+    <p class="mb-1">ジャンル: <%= @post.genre&.name %></p>
+    <p class="mb-3">住所: <%= @post.address %></p>
 
-<%= link_to "戻る", posts_path %>
-<%= render 'map_js' %>
+    <% if @post.image.attached? %>
+      <div class="my-3">
+        <%= image_tag @post.image.variant(resize_to_limit: [1200, 1200]), class: "img-fluid rounded" %>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <% if user_signed_in? && @post.user_id == current_user.id %>
+        <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-outline-primary me-2" %>
+        <%= button_to "削除", post_path(@post),
+              method: :delete,
+              data: { confirm: "本当に削除しますか？" },
+              class: "btn btn-sm btn-outline-danger" %>
+      <% end %>
+      <%= link_to "戻る", posts_path, class: "btn btn-sm btn-secondary ms-2" %>
+    </div>
+
+    <!-- いいね行（重複を解消して1つに） -->
+    <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+      <div>
+        ❤ <strong><%= @post.likes_count || @post.likes.size %></strong>
+      </div>
+
+      <% if user_signed_in? %>
+        <% if @post.liked_by?(current_user) %>
+          <% my_like = @post.likes.find_by(user_id: current_user.id) %>
+          <%= button_to "いいね解除", post_like_path(@post, my_like),
+                method: :delete, class: "btn btn-sm btn-outline-danger" %>
+        <% else %>
+          <%= button_to "いいね", post_likes_path(@post),
+                method: :post, class: "btn btn-sm btn-outline-primary" %>
+        <% end %>
+      <% else %>
+        <%= link_to "ログインしていいね", new_user_session_path, class: "btn btn-sm btn-outline-primary" %>
+      <% end %>
+    </div>
+
+    <hr>
+
+    <h2 class="h5 mt-4 mb-3">コメント（<%= @comments.size %>）</h2>
+
+    <!-- コメント一覧 -->
+    <div class="mb-4 text-start">
+      <% @comments.each do |c| %>
+        <div class="border rounded p-3 mb-2">
+          <div class="small text-muted">
+            <strong><%= c.user&.name || c.user&.email %></strong>
+            ・ <%= l c.created_at, format: :short %>
+          </div>
+          <div class="mt-1"><%= simple_format(h(c.body)) %></div>
+
+          <% if user_signed_in? && (c.user_id == current_user.id) %>
+            <div class="mt-2">
+              <%= button_to "削除", post_comment_path(@post, c),
+                    method: :delete,
+                    data: { confirm: "このコメントを削除しますか？" },
+                    class: "btn btn-sm btn-outline-danger" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if @comments.blank? %>
+        <div class="text-muted">まだコメントはありません。</div>
+      <% end %>
+    </div>
+
+    <!-- コメントフォーム -->
+    <% if user_signed_in? %>
+      <div class="card p-3 text-start">
+        <% if @comment.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% @comment.errors.full_messages.each do |m| %>
+                <li><%= m %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%= form_with model: [@post, @comment], local: true do |f| %>
+          <div class="mb-2">
+            <%= f.text_area :body, rows: 3, class: "form-control", placeholder: "コメントを書く…" %>
+          </div>
+          <%= f.submit "送信", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="alert alert-warning">
+        コメントするには <%= link_to "ログイン", new_user_session_path %> が必要です。
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%= render 'posts/map_js' %>

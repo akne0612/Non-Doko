@@ -1,0 +1,33 @@
+<div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+<div class="ratio ratio-4x3">
+<% if post.image&.attached? %>
+  <%= image_tag post.image.variant(resize_to_fill: [800, 600]), class: "object-fit-cover" %>
+<% elsif post.image_path.present? %>
+  <%= image_tag post.image_path, class: "object-fit-cover", alt: post.title %>
+<% else %>
+  <%= image_tag "placeholder.jpg", class: "object-fit-cover", alt: post.title %>
+<% end %>
+</div>
+  <div class="card-body">
+    <% if post.genre %>
+      <span class="badge rounded-pill bg-warning text-dark mb-2"><%= post.genre.name %></span>
+    <% end %>
+    <h3 class="h6 fw-bold mb-1">
+      <%= link_to post.title, post_path(post), class: "text-decoration-none text-dark" %>
+    </h3>
+    <p class="text-muted small mb-3"><%= truncate(post.body.to_s, length: 56) %></p>
+    <div class="d-flex align-items-center justify-content-between text-muted small">
+    <span>❤ <%= post.likes.size %></span>
+    <%# comments %>
+    <% comment_count =
+         if post.respond_to?(:comments_count)
+           post.comments_count
+         elsif post.respond_to?(:comments)
+           post.comments.size
+         else
+           0
+         end %>
+    <span>💬 <%= comment_count %></span>
+  </div>
+  </div>
+</div>
