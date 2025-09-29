@@ -1,0 +1,77 @@
+<% api_key = ENV['GOOGLE_MAPS_API_KEY'] || Rails.application.credentials.dig(:google_maps, :api_key) %>
+
+<% if api_key.present? %>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=<%= api_key %>&libraries=places&loading=async&callback=initPostDetailMap"
+    async defer></script>
+<% else %>
+  <div class="alert alert-warning my-2">
+    Google Maps APIキーが未設定です。環境変数 <code>GOOGLE_MAPS_API_KEY</code> か
+    <code>credentials[:google_maps][:api_key]</code> を設定してください。
+  </div>
+<% end %>
+
+<script>
+  // HTMLエスケープ
+  function escapeHtml(s){
+    return String(s||"").replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+    });
+  }
+
+  // 投稿詳細の地図初期化（1本だけピン）
+  window.initPostDetailMap = function(){
+    var el = document.getElementById("post-map");
+    if (!el) return;
+
+    var lat     = parseFloat(el.dataset.lat);
+    var lng     = parseFloat(el.dataset.lng);
+    var title   = el.dataset.title || "投稿場所";
+    var address = el.dataset.address || "";
+    var iconUrl = el.dataset.iconUrl;
+
+    function renderAt(latLng){
+      var map = new google.maps.Map(el, { center: latLng, zoom: 16, gestureHandling: "greedy" });
+
+      var markerOpts = { position: latLng, map: map, title: title };
+      if (iconUrl){
+        markerOpts.icon = {
+          url: iconUrl,
+          scaledSize: new google.maps.Size(36,36),
+          anchor: new google.maps.Point(18,36)
+        };
+      }
+      var marker = new google.maps.Marker(markerOpts);
+
+      var info = new google.maps.InfoWindow({ content: "<div>"+escapeHtml(title)+"</div>" });
+      marker.addListener("click", function(){ info.open(map, marker); });
+    }
+
+    // 1) 座標があれば即表示
+    if (!isNaN(lat) && !isNaN(lng)) {
+      renderAt({ lat: lat, lng: lng });
+      return;
+    }
+    // 2) 無ければ住所でジオコード
+    if (address) {
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: address }, function(results, status){
+        if (status === "OK" && results[0]) {
+          var loc = results[0].geometry.location;
+          renderAt({ lat: loc.lat(), lng: loc.lng() });
+        } else {
+          el.innerHTML = '<div class="text-muted">位置情報が見つかりませんでした</div>';
+        }
+      });
+    } else {
+      el.innerHTML = '<div class="text-muted">位置情報が未設定です</div>';
+    }
+  };
+</script>
+
+
+
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=<%= ENV.fetch('GOOGLE_MAPS_API_KEY') %>&libraries=places&loading=async&callback=initPostDetailMap"
+  async defer></script>

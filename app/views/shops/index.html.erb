@@ -1,6 +1,7 @@
 <div class="py-5" style="background:#f6efe6;">
   <div class="container">
-    <!-- ヘッダー行 -->
+
+    <!-- ヘッダー -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="h3 fw-bold m-0">お店を探す</h1>
       <%= link_to "投稿一覧へ", posts_path, class: "btn btn-outline-secondary" %>
@@ -23,9 +24,8 @@
         <div class="col-6 col-md-2">
           <%= select_tag :radius_km,
                 options_for_select([["半径なし", ""]] + [["半径3km",3],["半径5km",5],["半径10km",10],["半径20km",20]],
-                params[:radius_km]
-              ),
-              class: "form-select form-select-lg rounded-3" %>
+                                   params[:radius_km]),
+                class: "form-select form-select-lg rounded-3" %>
         </div>
         <div class="col-12 col-md-auto">
           <%= submit_tag "この条件で検索", class: "btn btn-dark btn-lg w-100 rounded-3" %>
@@ -38,15 +38,25 @@
       <% end %>
     </div>
 
-    <!-- 結果件数/基準表示 -->
-    <div class="d-flex justify-content-between align-items-center mb-3 text-muted small">
-      <div>該当 <strong><%= @posts.size %></strong> 件</div>
-      <% if @center_lat.present? && @center_lng.present? %>
-        <div>基準: <code><%= @center_lat %>, <%= @center_lng %></code> ／ 半径 <%= @radius_km %>km</div>
-      <% end %>
+    <!-- 適用中フィルタのチップ表示 -->
+    <div class="mb-3">
+      <div class="d-flex flex-wrap align-items-center gap-2 small">
+        <span class="text-muted">該当 <strong><%= @posts.size %></strong> 件</span>
+        <% if params[:place].present? %><span class="badge bg-light text-dark border">場所: <%= params[:place] %></span><% end %>
+        <% if params[:q].present? %><span class="badge bg-light text-dark border">キーワード: <%= params[:q] %></span><% end %>
+        <% if params[:genre_id].present? %>
+          <% if (g = @genres.find{|x| x.id.to_s == params[:genre_id].to_s }) %>
+            <span class="badge bg-light text-dark border">ジャンル: <%= g.name %></span>
+          <% end %>
+        <% end %>
+        <% if params[:radius_km].present? %><span class="badge bg-light text-dark border">半径: <%= params[:radius_km] %>km</span><% end %>
+        <% if @center_lat.present? && @center_lng.present? %>
+          <span class="badge bg-light text-dark border">基準: <code><%= @center_lat %>, <%= @center_lng %></code></span>
+        <% end %>
+      </div>
     </div>
 
-    
+    <!-- 検索結果 -->
     <div class="row g-4">
       <% if @posts.present? %>
         <% @posts.each do |post| %>

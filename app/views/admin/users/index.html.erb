@@ -2,6 +2,23 @@
   <div class="container py-4" style="max-width: 900px;">
     <h1 class="h4 mb-4 text-center">ユーザー管理</h1>
 
+    <!-- 追加: 検索フォーム（従来デザインを崩さないシンプル版） -->
+    <%= form_with url: admin_users_path, method: :get, local: true, html: { class: "row g-2 justify-content-center mb-3" } do %>
+      <div class="col-12 col-md-6">
+        <input type="text"
+               name="q"
+               value="<%= params[:q] %>"
+               class="form-control"
+               placeholder="名前・Emailで検索">
+      </div>
+      <div class="col-6 col-md-auto">
+        <button type="submit" class="btn btn-outline-primary w-100">検索</button>
+      </div>
+      <div class="col-6 col-md-auto">
+        <a href="<%= admin_users_path %>" class="btn btn-outline-secondary w-100">リセット</a>
+      </div>
+    <% end %>
+
     <table class="table table-striped align-middle text-center">
       <thead>
         <tr>
@@ -21,11 +38,13 @@
               <%= link_to "編集", edit_admin_user_path(u), class: "btn btn-sm btn-outline-secondary me-2" %>
               <%= button_to "削除", admin_user_path(u),
                     method: :delete,
-                    data: { confirm: "本当に削除しますか？" },
+                    data: { turbo_confirm: "本当に削除しますか？" },
+                    form: { class: "d-inline" },
                     class: "btn btn-sm btn-outline-danger" %>
             </td>
           </tr>
         <% end %>
+
         <% if @users.blank? %>
           <tr>
             <td colspan="4" class="text-muted py-4">ユーザーがいません。</td>

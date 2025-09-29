@@ -1,35 +1,77 @@
+
 <%= render 'posts/map_box' %>
 
 <div class="container py-5">
+
+  <%# ====== ヘッダー（アイコン + タイトル / ユーザー名 / 日時） + 戻る ====== %>
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <!-- 左: アイコン + タイトル/ユーザー/日時 -->
+    <div class="d-flex align-items-center gap-3 text-start">
+      <%= link_to user_path(@post.user), class: "d-inline-flex align-items-center" do %>
+        <% if @post.user&.avatar&.attached? %>
+          <%= image_tag @post.user.avatar.variant(resize_to_fill: [50, 50]),
+                class: "rounded-circle border", alt: "#{@post.user.name}のアイコン" %>
+        <% else %>
+          <div class="rounded-circle bg-light border d-inline-flex align-items-center justify-content-center"
+               style="width:50px;height:50px;">
+            <span class="fw-bold text-muted"><%= @post.user.name.to_s.first&.upcase || "?" %></span>
+          </div>
+        <% end %>
+      <% end %>
+
+      <div>
+        <h1 class="h4 mb-1"><%= @post.title %></h1>
+        <div class="small text-muted">
+          <%= link_to @post.user.name, user_path(@post.user), class: "fw-semibold text-dark text-decoration-none" %>
+          ・ <%= l @post.created_at, format: :short %>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右: 戻る -->
+    <div class="ms-3">
+      <%= link_to "← 戻る", posts_path, class: "btn btn-sm btn-outline-secondary" %>
+    </div>
+  </div>
+
+  <%# ====== 本文エリア ====== %>
   <div class="col-md-8 mx-auto text-center">
-    <h1 class="mb-3"><%= @post.title %></h1>
 
-    <p class="mb-3"><%= simple_format(h(@post.body)) %></p>
-    <p class="mb-1">ジャンル: <%= @post.genre&.name %></p>
-    <p class="mb-3">住所: <%= @post.address %></p>
+    <%# 本文 %>
+    <p class="mb-3 text-start"><%= simple_format(h(@post.body)) %></p>
 
+    <%# メタ情報: ジャンル & 住所 %>
+    <div class="mb-3 small text-muted">
+      <% if @post.genre&.name.present? %>
+        <span class="me-2">ジャンル: <%= @post.genre.name %></span>
+      <% end %>
+      <% if @post.address.present? %>
+        <span>住所: <%= @post.address %></span>
+      <% end %>
+    </div>
+
+    <%# 投稿画像 %>
     <% if @post.image.attached? %>
       <div class="my-3">
-        <%= image_tag @post.image.variant(resize_to_limit: [1200, 1200]), class: "img-fluid rounded" %>
+        <%= image_tag @post.image.variant(resize_to_limit: [1200, 1200]),
+              class: "img-fluid rounded" %>
       </div>
     <% end %>
 
-    <div class="mb-3">
+    <%# 操作ボタン（編集・削除） %>
+    <div class="mb-3 d-flex flex-wrap justify-content-center gap-2">
       <% if user_signed_in? && @post.user_id == current_user.id %>
-        <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-outline-primary me-2" %>
+        <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-outline-primary" %>
         <%= button_to "削除", post_path(@post),
               method: :delete,
               data: { confirm: "本当に削除しますか？" },
               class: "btn btn-sm btn-outline-danger" %>
       <% end %>
-      <%= link_to "戻る", posts_path, class: "btn btn-sm btn-secondary ms-2" %>
     </div>
 
-    <!-- いいね行（重複を解消して1つに） -->
+    <%# いいね行 %>
     <div class="d-flex justify-content-center align-items-center gap-3 my-3">
-      <div>
-        ❤ <strong><%= @post.likes_count || @post.likes.size %></strong>
-      </div>
+      <div>❤ <strong><%= @post.likes_count || @post.likes.size %></strong></div>
 
       <% if user_signed_in? %>
         <% if @post.liked_by?(current_user) %>
@@ -47,9 +89,10 @@
 
     <hr>
 
+    <%# ====== コメント ====== %>
     <h2 class="h5 mt-4 mb-3">コメント（<%= @comments.size %>）</h2>
 
-    <!-- コメント一覧 -->
+    <%# コメント一覧 %>
     <div class="mb-4 text-start">
       <% @comments.each do |c| %>
         <div class="border rounded p-3 mb-2">
@@ -75,7 +118,7 @@
       <% end %>
     </div>
 
-    <!-- コメントフォーム -->
+    <%# コメントフォーム %>
     <% if user_signed_in? %>
       <div class="card p-3 text-start">
         <% if @comment.errors.any? %>
@@ -100,6 +143,7 @@
         コメントするには <%= link_to "ログイン", new_user_session_path %> が必要です。
       </div>
     <% end %>
+
   </div>
 </div>
 

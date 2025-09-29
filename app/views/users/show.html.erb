@@ -1,0 +1,63 @@
+<div class="container" style="max-width: 720px;">
+
+  <h1 class="h4 mb-3"><%= @user.name %></h1>
+
+  <div class="d-flex align-items-start gap-3 mb-3">
+    <div>
+      <% if @user.avatar&.attached? %>
+        <%= image_tag @user.avatar, class: "rounded-circle border", alt: "avatar", size: "120x120" %>
+      <% else %>
+        <div class="rounded-circle border d-flex align-items-center justify-content-center" style="width:120px;height:120px;">
+          <span class="text-muted">No Image</span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @user.respond_to?(:bio) && @user.bio.present? %>
+    <div class="mb-4">
+      <h2 class="h6">自己紹介</h2>
+      <%= simple_format(@user.bio) %>
+    </div>
+  <% end %>
+
+  <% if user_signed_in? && current_user == @user %>
+    <%= link_to "プロフィールを編集", edit_user_path(@user), class: "btn btn-primary" %>
+  <% end %>
+
+  <hr class="my-4">
+
+  <h2 class="h6 mb-3">投稿一覧</h2>
+  <% if @posts.present? %>
+    <div class="d-grid gap-3">
+      <% @posts.each do |post| %>
+        <div class="card p-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <h3 class="h6 mb-0">
+              <%= link_to (post.respond_to?(:title) && post.title.present? ? post.title : "（無題）"), post_path(post) %>
+            </h3>
+            <small class="text-muted"><%= post.created_at.strftime("%Y-%m-%d %H:%M") %></small>
+          </div>
+
+          <% if post.respond_to?(:body) && post.body.present? %>
+            <p class="mt-2 mb-0 text-muted"><%= truncate(strip_tags(post.body), length: 120) %></p>
+          <% end %>
+
+          <% if post.respond_to?(:image) && post.image&.attached? %>
+            <div class="mt-2">
+              <%= image_tag post.image, alt: "", class: "img-fluid rounded", size: "320x180" %>
+            </div>
+          <% end %>
+
+          <div class="mt-2 text-muted small">
+            <% if post.respond_to?(:likes) %>❤️ <%= post.likes.size %><% end %>
+            <% if post.respond_to?(:comments) %> ・💬 <%= post.comments.size %><% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted">まだ投稿はありません。</p>
+  <% end %>
+
+</div>

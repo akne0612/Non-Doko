@@ -1,13 +1,5 @@
 <div class="text-center my-5">
   <p class="lead">今日の一杯、どこで呑ンどこ？</p>
-
-  <div class="mt-4">
-  
-    <% unless user_signed_in? %>
-      <%= link_to "ログイン", new_user_session_path, class: "btn btn-outline-primary btn-lg mx-2" %>
-      <%= link_to "新規登録", new_user_registration_path, class: "btn btn-outline-success btn-lg mx-2" %>
-    <% end %>
-  </div>
 </div>
 
 <div class="container mt-5">

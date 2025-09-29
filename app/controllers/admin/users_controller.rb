@@ -3,6 +3,11 @@ class Admin::UsersController < ApplicationController
 
   def index
     @users = User.order(created_at: :desc)
+    @users = User.order(id: :asc)
+    if params[:q].present?
+      q = "%#{params[:q]}%"
+      @users = @users.where("name LIKE ? OR email LIKE ?", q, q)
+    end
   end
 
   def edit

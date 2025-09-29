@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'users/show'
+  get 'users/edit'
+  get 'users/update'
   get 'comments/create'
   get 'comments/destroy'
   # Devise（管理者は登録/パスワード機能なし）
@@ -32,7 +35,7 @@ Rails.application.routes.draw do
   end
 
   # ユーザー
-  resources :users, only: [:show] do
+  resources :users, only: [:show, :edit, :update] do
     member { get :likes }
   end
 end

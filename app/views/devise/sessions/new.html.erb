@@ -1,36 +1,57 @@
-<% if flash[:alert] %>
-  <div class="alert alert-danger">
-    <%= flash[:alert] %>
-  </div>
-<% end %>
-<h2>ログイン</h2>
+<div class="py-5" style="background:#fff8f0;">
+  <div class="container">
+    <div class="mx-auto" style="max-width: 420px;">
 
-<%= form_with(model: resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :name, "名前" %><br />
-    <%= f.text_field :name, autofocus: true, autocomplete: "name" %>
-  </div>
-  
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+      <
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
 
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+          <h2 class="h4 fw-bold text-center mb-4" style="color:#EF8134;">ログイン</h2>
+
+          <%= form_with(model: resource,
+                        as: resource_name,
+                        url: session_path(resource_name),
+                        local: true) do |f| %>
+            <div class="mb-3">
+              <%= f.label :name, "名前", class: "form-label" %>
+              <%= f.text_field :name, class: "form-control form-control-lg", autocomplete: "name", placeholder: "例）のんべえ太郎" %>
+              <div class="form-text text-muted">※ メールでログインの場合は未入力でもOK</div>
+            </div>
+            <div class="mb-3">
+              <%= f.label :email, "メールアドレス", class: "form-label" %>
+              <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "you@example.com" %>
+            </div>
+
+            <div class="mb-2">
+              <%= f.label :password, "パスワード", class: "form-label" %>
+              <%= f.password_field :password, class: "form-control form-control-lg", autocomplete: "current-password", placeholder: "••••••••" %>
+            </div>
+
+            <% if devise_mapping.rememberable? %>
+              <div class="form-check my-3">
+                <%= f.check_box :remember_me, class: "form-check-input", id: "rememberMe" %>
+                <%= f.label :remember_me, "ログイン情報を保存する", class: "form-check-label", for: "rememberMe" %>
+              </div>
+            <% end %>
+
+            <div class="d-grid">
+              <%= f.submit "ログイン", class: "btn btn-orange btn-lg rounded-3" %>
+            </div>
+          <% end %>
+
+          <hr class="my-4">
+
+          <div class="d-flex flex-column gap-2 text-center">
+            <%= link_to "パスワードをお忘れの方はこちら", new_password_path(resource_name), class: "text-decoration-none text-muted" %>
+            <%= link_to "新規登録はこちら", new_registration_path(resource_name), class: "btn btn-coral rounded-3" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-3">
+        <%= link_to "トップへ戻る", root_path, class: "text-muted text-decoration-none" %>
+      </div>
     </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
   </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

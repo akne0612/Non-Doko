@@ -1,6 +1,6 @@
 <%= render 'map_box' %>
-<h1>新規投稿</h1>
+<h1 class="h4 text-center mt-3 mb-4">新規投稿</h1>
 
-<%= render 'form', post: @post %>
-<%= render "map_js" %>
-<%= link_to '投稿一覧に戻る', posts_path %>
+<%= render 'posts/form', post: @post %>
+<%= render "posts/map_js" %>
+<%= link_to '投稿一覧に戻る', posts_path, class: "btn btn-outline-secondary d-block mx-auto my-3" %>

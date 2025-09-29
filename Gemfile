@@ -67,3 +67,4 @@ gem "net-pop"
 gem "net-imap"
 gem 'image_processing', '~> 1.2'
 
+gem 'devise-i18n'
