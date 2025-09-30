@@ -66,5 +66,7 @@
 - IDE：Cloud9
 ​
 ## 使用素材
-ロゴ作成時に使用予定
+ロゴ作成
 - designevo　(https://www.designevo.com/)
+マップピンアイコン
+- SVGRepo (https://www.svgrepo.com/) by [Asam Munir] 

@@ -1,5 +1,6 @@
 
 <script>
+{
   let map, marker, geocoder, places;
 
   window.initMap = function() {
@@ -152,6 +153,7 @@ marker = new google.maps.Marker({
     setLatLng(initialPosition);
     reverseGeocode(initialPosition);
   };
+}
 </script>
 
 

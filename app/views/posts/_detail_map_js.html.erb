@@ -1,15 +1,3 @@
-<% api_key = ENV['GOOGLE_MAPS_API_KEY'] || Rails.application.credentials.dig(:google_maps, :api_key) %>
-
-<% if api_key.present? %>
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=<%= api_key %>&libraries=places&loading=async&callback=initPostDetailMap"
-    async defer></script>
-<% else %>
-  <div class="alert alert-warning my-2">
-    Google Maps APIキーが未設定です。環境変数 <code>GOOGLE_MAPS_API_KEY</code> か
-    <code>credentials[:google_maps][:api_key]</code> を設定してください。
-  </div>
-<% end %>
 
 <script>
   // HTMLエスケープ
@@ -73,5 +61,5 @@
 
 
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=<%= ENV.fetch('GOOGLE_MAPS_API_KEY') %>&libraries=places&loading=async&callback=initPostDetailMap"
+  src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_API_KEY'] %>&libraries=places&loading=async&callback=initPostDetailMap"
   async defer></script>
