@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   get 'comments/create'
   get 'comments/destroy'
   # Devise（管理者は登録/パスワード機能なし）
-  devise_for :admins, path: 'admin', skip: [:registrations, :passwords]
+  devise_for :admin, skip: [:registrations, :passwords], controllers: {
+    sessions: 'admin/sessions',
+  }
   devise_for :users
 
   # 一般ページ
@@ -16,9 +18,11 @@ Rails.application.routes.draw do
   # 管理画面
   namespace :admin do
     root to: "dashboard#index"
+    get "dashboard", to: "dashboard#index"
     resources :users,    only: [:index, :edit, :update, :destroy]
     resources :genres,   only: [:index, :new, :create, :edit, :update, :destroy]
     resources :comments, only: [:index, :destroy]
+   
   end
 
   # 投稿

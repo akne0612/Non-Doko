@@ -40,10 +40,12 @@
 
           <hr class="my-4">
 
-          <div class="d-flex flex-column gap-2 text-center">
-            <%= link_to "パスワードをお忘れの方はこちら", new_password_path(resource_name), class: "text-decoration-none text-muted" %>
-            <%= link_to "新規登録はこちら", new_registration_path(resource_name), class: "btn btn-coral rounded-3" %>
-          </div>
+          <% if resource_name == :user %>
+            <div class="d-flex flex-column gap-2 text-center">
+             <%= link_to "パスワードをお忘れの方はこちら", new_user_password_path, class: "text-decoration-none text-muted" %>
+             <%= link_to "新規登録はこちら", new_user_registration_path, class: "btn btn-coral rounded-3" %>
+            </div>
+          <% end %>
         </div>
       </div>
 
