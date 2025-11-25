@@ -3,9 +3,9 @@
 
 <div class="container py-5">
 
-  <%# ====== ヘッダー（アイコン + タイトル / ユーザー名 / 日時） + 戻る ====== %>
+  
   <div class="d-flex align-items-center justify-content-between mb-4">
-    <!-- 左: アイコン + タイトル/ユーザー/日時 -->
+   
     <div class="d-flex align-items-center gap-3 text-start">
       <%= link_to user_path(@post.user), class: "d-inline-flex align-items-center" do %>
         <% if @post.user&.avatar&.attached? %>
@@ -28,20 +28,22 @@
       </div>
     </div>
 
-    <!-- 右: 戻る -->
+   
     <div class="ms-3">
       <%= link_to "← 戻る", posts_path, class: "btn btn-sm btn-outline-secondary" %>
     </div>
   </div>
 
-  <%# ====== 本文エリア ====== %>
+ 
   <div class="col-md-8 mx-auto text-center">
 
-    <%# 本文 %>
     <p class="mb-3 text-start"><%= simple_format(h(@post.body)) %></p>
 
-    <%# メタ情報: ジャンル & 住所 %>
+   
     <div class="mb-3 small text-muted">
+      <% if @post.store_name.present? %>
+        <span class="me-2">店名: <%= @post.store_name %></span>
+      <% end %>
       <% if @post.genre&.name.present? %>
         <span class="me-2">ジャンル: <%= @post.genre.name %></span>
       <% end %>
@@ -50,15 +52,15 @@
       <% end %>
     </div>
 
-    <%# 投稿画像 %>
+   
     <% if @post.image.attached? %>
       <div class="my-3">
-        <%= image_tag @post.image.variant(resize_to_limit: [1200, 1200]),
+        <%= image_tag @post.image,
               class: "img-fluid rounded" %>
       </div>
     <% end %>
 
-    <%# 操作ボタン（編集・削除） %>
+   
     <div class="mb-3 d-flex flex-wrap justify-content-center gap-2">
       <% if user_signed_in? && @post.user_id == current_user.id %>
         <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-outline-primary" %>
@@ -69,7 +71,7 @@
       <% end %>
     </div>
 
-    <%# いいね行 %>
+   
     <div class="d-flex justify-content-center align-items-center gap-3 my-3">
       <div>❤ <strong><%= @post.likes_count || @post.likes.size %></strong></div>
 
@@ -89,10 +91,10 @@
 
     <hr>
 
-    <%# ====== コメント ====== %>
+   
     <h2 class="h5 mt-4 mb-3">コメント（<%= @comments.size %>）</h2>
 
-    <%# コメント一覧 %>
+   
     <div class="mb-4 text-start">
       <% @comments.each do |c| %>
         <div class="border rounded p-3 mb-2">
@@ -118,7 +120,7 @@
       <% end %>
     </div>
 
-    <%# コメントフォーム %>
+    
     <% if user_signed_in? %>
       <div class="card p-3 text-start">
         <% if @comment.errors.any? %>
